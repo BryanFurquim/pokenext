@@ -19,6 +19,24 @@ type PageProps = {
   }>;
 };
 
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const response = await fetch(
+    "https://pokeapi.co/api/v2/pokemon?limit=100"
+  );
+
+  const data = await response.json();
+
+  return data.results.map((pokemon: { name: string; url: string }) => {
+    const id = pokemon.url.split("/").filter(Boolean).pop();
+
+    return {
+      id,
+    };
+  });
+}
+
 export default async function PokemonPage({ params }: PageProps) {
   const { id } = await params;
 
